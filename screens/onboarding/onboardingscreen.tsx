@@ -54,7 +54,7 @@ export default function onboardingscreen() {
             source={require("@/assets/onboarding/shape_6.png")}
             />
             <Text style={[styles.titleText, {fontFamily:"raleway_700Bold"}]}>
-              Becodemy
+              DeepSense
 
             </Text>
 

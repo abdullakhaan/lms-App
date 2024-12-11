@@ -3,7 +3,7 @@ import React from "react";
 import { useFonts, Raleway_700Bold } from "@expo-google-fonts/raleway";
 import { Nunito_400Regular, Nunito_700Bold } from "@expo-google-fonts/nunito";
 import { LinearGradient } from "expo-linear-gradient";
-import { styles } from "@/styles/onboarding/onboarding";
+import { styless } from "@/styles/onboarding/onboarding";
 import { router } from "expo-router";
 
 export default function onboardingscreen() {
@@ -21,53 +21,53 @@ export default function onboardingscreen() {
       colors={["#E5ECF9", "#F6F7F9"]}
       style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
     >
-      <View style={styles.firstContainer}>
+      <View style={styless.firstContainer}>
         <View>
           <Image
             source={require("@/assets/images/logo.png")}
-            style={styles.logo}
+            style={styless.logo}
           />
 
           <Image source={require("@/assets/onboarding/shape_9.png")} />
         </View>
 
-        <View style={styles.titleWrapper}>
+        <View style={styless.titleWrapper}>
           <Image
-            style={styles.titleTextShape1}
+            style={styless.titleTextShape1}
             source={require("@/assets/onboarding/shape_3.png")}
           />
-          <Text style={[styles.titleText, { fontFamily: "Raleway_700Bold" }]}>
+          <Text style={[styless.titleText, { fontFamily: "Raleway_700Bold" }]}>
             Start Learning With
           </Text>
           <Image
-            style={styles.titleTextShape2}
+            style={styless.titleTextShape2}
             source={require("@/assets/onboarding/shape_2.png")}
           />
         </View>
 
         <View>
           <Image
-            style={styles.titleShape3}
+            style={styless.titleShape3}
             source={require("@/assets/onboarding/shape_6.png")}
           />
-          <Text style={[styles.titleText, { fontFamily: "raleway_700Bold" }]}>
+          <Text style={[styless.titleText, { fontFamily: "raleway_700Bold" }]}>
             DeepSense
           </Text>
         </View>
 
-        <View style={styles.dscpWrapper}>
-          <Text style={[styles.dscpText, {fontFamily: "Nunito_400Regular"}]}>
+        <View style={styless.dscpWrapper}>
+          <Text style={[styless.dscpText, {fontFamily: "Nunito_400Regular"}]}>
             Explore a variety of interactive lesson, 
           </Text>
-          <Text style={[styles.dscpText, {fontFamily: "Nunito_400Regular"}]}>
+          <Text style={[styless.dscpText, {fontFamily: "Nunito_400Regular"}]}>
            video, quizzes & assignment.
           </Text>
         </View>
 
-        <TouchableOpacity style={styles.buttonWrapper}
+        <TouchableOpacity style={styless.buttonWrapper}
         onPress={()=> router.push("/(routes)/welcome-intro")}
         >
-          <Text style={[styles.buttonText,  {fontFamily: "Nunito_700Bold"}]}>
+          <Text style={[styless.buttonText,  {fontFamily: "Nunito_700Bold"}]}>
           Getting Started
           </Text>
 

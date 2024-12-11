@@ -33,5 +33,24 @@ export const styles = StyleSheet.create({
    titleShape3:{
       position: "absolute",
       left: 60,
+   },
+   dscpWrapper:{
+      marginTop: 30,
+   },
+   dscpText:{
+     textAlign: "center",
+     color: "#575757",
+     fontSize: hp("2%"),
+   },
+   buttonWrapper:{
+    backgroundColor: "#2467EC",
+    width: wp("92%"),
+    paddingVertical: 18,
+    borderRadius: 4,
+    marginTop: 40,
+   },
+   buttonText:{
+      color: "white",
+      textAlign: "center",
    }
  });

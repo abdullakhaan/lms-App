@@ -22,16 +22,53 @@ export default function onboardingscreen() {
 
         <View style={styles.firstContainer}>
 
-          </View>
+          
+          <View>
           <Image
+          source={require("@/assets/images/logo.png")}
           style= {styles.logo}
           />
 
+          <Image 
+          source={require("@/assets/onboarding/shape_9.png")}
+          />
+          </View>
 
-          <View>
+          <View style={styles.titleWrapper} >
+            <Image 
+            style={styles.titleTextShape1}
+            source={require("@/assets/onboarding/shape_3.png")}
+            />
+            <Text style={[styles.titleText, {fontFamily: "Raleway_700Bold"}]}>
+              Start Learning With
+            </Text>
+            <Image 
+            style={styles.titleTextShape2}
+            source={require("@/assets/onboarding/shape_2.png")}
+            />
+          </View>
+
+          <View >
+            <Image 
+            style={styles.titleShape3}
+            source={require("@/assets/onboarding/shape_6.png")}
+            />
+            <Text style={[styles.titleText, {fontFamily:"raleway_700Bold"}]}>
+              Becodemy
+
+            </Text>
+
+            </View>
+
+
+
+
+
         </View>
 
     </LinearGradient>
+
+
 
   );
 }

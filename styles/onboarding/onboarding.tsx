@@ -13,4 +13,25 @@ export const styles = StyleSheet.create({
       width: wp("23%"),
       height: hp("10%"),
    },
+   titleWrapper:{
+      flexDirection: "row",
+   },
+   titleTextShape1:{
+      position: "absolute",
+      left: -28,
+      top: -20,
+   },
+   titleText:{
+      fontSize: hp("4%"),
+      textAlign: "center",
+   },
+   titleTextShape2:{
+      position: "absolute",
+      right: -40,
+      top: -20,
+   },
+   titleShape3:{
+      position: "absolute",
+      left: 60,
+   }
  });

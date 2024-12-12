@@ -60,7 +60,7 @@ export default function onboardingscreen() {
             Explore a variety of interactive lesson, 
           </Text>
           <Text style={[styless.dscpText, {fontFamily: "Nunito_400Regular"}]}>
-           video, quizzes & assignment.
+           video, quizzes & assignments.
           </Text>
         </View>
 

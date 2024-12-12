@@ -79,9 +79,3 @@ export default function WelcomeIntroScreen() {
   );
 }
 
-const styles = StyleSheet.create ({
-  slideImage: {
-    alignSelf: 'center',
-    marginBottom: 30,
-  }
-})

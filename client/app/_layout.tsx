@@ -48,12 +48,21 @@ export default function RootLayout() {
 function RootLayoutNav() {
   const [isLoggedIn, setisLoggedIn] = useState(false);
 
-  return <>{isLoggedIn ? <View></View> : 
-  (
+  return (
+  <>
+  {isLoggedIn ? ( 
+  <View></View> 
+  ) : (
     <Stack screenOptions={{headerShown: false}}>
      <Stack.Screen name="index" />
      <Stack.Screen name="(routes)/welcome-intro/index" />
+     <Stack.Screen name="(routes)/login/index" />
+     <Stack.Screen name="(routes)/sign-up/index" />
+     <Stack.Screen name="(routes)/forget-password/index" />
+
     </Stack>
-  )
-  }</>;
+  )}
+  
+  </>
+  );
 }

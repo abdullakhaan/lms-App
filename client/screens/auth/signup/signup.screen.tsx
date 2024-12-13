@@ -33,7 +33,7 @@ import {
 import React from 'react'
 import { commonStyles } from "@/styles/common/common.styles";
 
-export default function LoginScreen() {
+export default function SignUpScreen() {
   const [isPasswordVisible, setPasswordVisible] = useState(false);
   const [buttonSpinner, setButtonSpinner] = useState(false);
   const [userInfo, setUserInfo] = useState({
@@ -94,7 +94,7 @@ export default function LoginScreen() {
   };
 
   const handleSignIn = async () => {
-   
+   router.push("/(routes)/verifyAccount");
   };
 
   return (
@@ -105,14 +105,14 @@ export default function LoginScreen() {
 
         <ScrollView>
             <Image
-            source={require("@/assets/sign-in/sign_in.png")}
+            source={require("@/assets/sign-in/signup.png")}
             style={styles.signInImage}
             />
             <Text style={[styles.welcomeText, { fontFamily: "Raleway_700Bold" }]}>
-          Welcome Back!
+          Lets get Started!
         </Text>
         <Text style={styles.learningText}>
-          Login to your existing account of Becodemy
+          Create an account to DeepSense to get all features
         </Text>
         <View style={styles.inputContainer}>
             <View>
@@ -175,18 +175,7 @@ export default function LoginScreen() {
                 </Text>
               </View>
             )}
-            <TouchableOpacity
-              onPress={() => router.push("/(routes)/forget-password")}
-            >
-              <Text
-                style={[
-                  styles.forgotSection,
-                  { fontFamily: "Nunito_600SemiBold" },
-                ]}
-              >
-                Forgot Password?
-              </Text>
-            </TouchableOpacity>
+            
 
             <TouchableOpacity
            style={{
@@ -208,7 +197,7 @@ export default function LoginScreen() {
                             textAlign: "center",
                             fontSize: 16,
                             fontFamily: "Raleway_700Bold",
-                          }}> Sign In
+                          }}> Sign Up
 
 
                         </Text>
@@ -236,7 +225,7 @@ export default function LoginScreen() {
             style={styles.signupRedirect}
             >
 
-                <Text style={{ fontSize: 18, fontFamily: "Raleway_600SemiBold"}}>Don't have an account?</Text>
+                <Text style={{ fontSize: 18, fontFamily: "Raleway_600SemiBold"}}>Already have an account?</Text>
                 <TouchableOpacity
                 onPress={() => router.push("/(routes)/sign-up")}
               >
@@ -248,7 +237,7 @@ export default function LoginScreen() {
                     marginLeft: 5,
                   }}
                 >
-                  Sign Up
+                  Sign In
                 </Text>
               </TouchableOpacity>
             </View>

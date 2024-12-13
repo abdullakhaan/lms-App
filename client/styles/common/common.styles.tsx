@@ -61,3 +61,4 @@ export const commonStyles = StyleSheet.create({
     top: 60,
   },
 });
+

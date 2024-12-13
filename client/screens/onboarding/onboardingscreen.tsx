@@ -56,24 +56,22 @@ export default function onboardingscreen() {
         </View>
 
         <View style={styless.dscpWrapper}>
-          <Text style={[styless.dscpText, {fontFamily: "Nunito_400Regular"}]}>
-            Explore a variety of interactive lesson, 
+          <Text style={[styless.dscpText, { fontFamily: "Nunito_400Regular" }]}>
+            Explore a variety of interactive lesson,
           </Text>
-          <Text style={[styless.dscpText, {fontFamily: "Nunito_400Regular"}]}>
-           video, quizzes & assignments.
+          <Text style={[styless.dscpText, { fontFamily: "Nunito_400Regular" }]}>
+            video, quizzes & assignments.
           </Text>
         </View>
 
-        <TouchableOpacity style={styless.buttonWrapper}
-        onPress={()=> router.push("/(routes)/welcome-intro")}
+        <TouchableOpacity
+          style={styless.buttonWrapper}
+          onPress={() => router.push("/(routes)/welcome-intro")}
         >
-          <Text style={[styless.buttonText,  {fontFamily: "Nunito_700Bold"}]}>
-          Getting Started
+          <Text style={[styless.buttonText, { fontFamily: "Nunito_700Bold" }]}>
+            Getting Started
           </Text>
-
         </TouchableOpacity>
-
-
       </View>
     </LinearGradient>
   );

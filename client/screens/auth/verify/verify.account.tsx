@@ -1,7 +1,15 @@
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import React, { useRef, useState } from "react";
 import { styless } from "@/styles/onboarding/onboarding";
 import index from "@/app";
+import Button from "../../../components/button/button";
+import { router } from "expo-router";
 
 export default function VerifyAccount() {
   const [code, setCode] = useState(new Array(4).fill(""));
@@ -22,25 +30,40 @@ export default function VerifyAccount() {
     }
   };
 
+  const handleSubmit = () => {};
+
   return (
     <View style={styles.container}>
       <Text style={styles.headerText}>Verification Code</Text>
       <Text style={styles.subText}>
         We have sent the verification code to your email address
       </Text>
-      <View style= {styles.inputContainer}>
-        {code.map((_,index)=>(
-            <TextInput key= {index} style={styles.inputBox}
+      <View style={styles.inputContainer}>
+        {code.map((_, index) => (
+          <TextInput
+            key={index}
+            style={styles.inputBox}
             keyboardType="number-pad"
             maxLength={1}
-            onChangeText={(text)=> handleInput(text,index)}
+            onChangeText={(text) => handleInput(text, index)}
             value={code[index]}
             ref={inputs.current[index]}
-            returnKeyType="done"
             autoFocus={index === 0}
-            />
+          />
         ))}
-
+      </View>
+      <View style={{ marginTop: 10 }}>
+        <Button title="Submit" onPress={handleSubmit} />
+      </View>
+      <View style={styles.loginLink}>
+        <Text style={[styles.backText, { fontFamily: "Nunito_700Bold" }]}>
+          Back To?
+        </Text>
+        <TouchableOpacity onPress={() => router.back()}>
+          <Text style={[styles.loginText, { fontFamily: "Nunito_700Bold" }]}>
+            Sign In
+          </Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -70,8 +93,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   inputBox: {
-    width: 40,
-    height: 40,
+    width: 60,
+    height: 60,
     borderWidth: 1,
     borderColor: "#ddd",
     textAlign: "center",
@@ -79,4 +102,15 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     fontSize: 20,
   },
+  loginLink: {
+    flexDirection: "row",
+    marginTop: 30,
+  },
+  loginText: {
+    color: "#3876EE",
+    marginLeft: 5,
+    fontSize: 16,
+  },
+
+  backText: { fontSize: 16 },
 });

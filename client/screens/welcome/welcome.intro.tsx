@@ -1,7 +1,10 @@
 import { Text, View, Image } from "react-native";
 import React from "react";
 import { StyleSheet } from "react-native";
-import { Nunito_400Regular,Nunito_600SemiBold,} from "@expo-google-fonts/nunito";
+import {
+  Nunito_400Regular,
+  Nunito_600SemiBold,
+} from "@expo-google-fonts/nunito";
 import AppIntroSlider from "react-native-app-intro-slider";
 import { useFonts, Raleway_700Bold } from "@expo-google-fonts/raleway";
 import { LinearGradient } from "expo-linear-gradient";
@@ -27,24 +30,39 @@ export default function WelcomeIntroScreen() {
       colors={["#E5ECF9", "#F6F7F9", "#E8EEF9"]}
       style={{ flex: 1, paddingHorizontal: 16 }}
     >
-      <View style={{marginTop: 80}}>
+      <View style={{ marginTop: 80 }}>
         <Image
-        source={item.image}
-        style={{alignSelf: 'center', marginBottom: 30,}}
+          source={item.image}
+          style={{ alignSelf: "center", marginBottom: 30 }}
         />
-        <Text style= {[commonStyles.title, {fontFamily: "Raleway_700Bold"}]}>
+        <Text style={[commonStyles.title, { fontFamily: "Raleway_700Bold" }]}>
           {item.title}
         </Text>
-        <View style= {{marginTop:15}}>
-        <Text style={[commonStyles.description, { fontFamily: "Nunito_400Regular" }]}>
-          {item.description}
-        </Text>
-        <Text style={[commonStyles.description, { fontFamily: "Nunito_400Regular" }]}>
-          {item.sortDescrition}
-        </Text>
-        <Text style={[commonStyles.description, { fontFamily: "Nunito_400Regular" }]}>
-          {item.sortDescrition2}
-        </Text>
+        <View style={{ marginTop: 15 }}>
+          <Text
+            style={[
+              commonStyles.description,
+              { fontFamily: "Nunito_400Regular" },
+            ]}
+          >
+            {item.description}
+          </Text>
+          <Text
+            style={[
+              commonStyles.description,
+              { fontFamily: "Nunito_400Regular" },
+            ]}
+          >
+            {item.sortDescrition}
+          </Text>
+          <Text
+            style={[
+              commonStyles.description,
+              { fontFamily: "Nunito_400Regular" },
+            ]}
+          >
+            {item.sortDescrition2}
+          </Text>
         </View>
       </View>
     </LinearGradient>
@@ -52,7 +70,7 @@ export default function WelcomeIntroScreen() {
   return (
     <AppIntroSlider
       renderItem={renderItem}
-     data={onboardingSwiperData}
+      data={onboardingSwiperData}
       onDone={() => {
         router.push("/login");
       }}
@@ -60,17 +78,19 @@ export default function WelcomeIntroScreen() {
         router.push("/login");
       }}
       renderNextButton={() => (
-        <View style={[styless.welcomeButtonStyle ]}>
-          <Text style= {[styless.buttonText, {fontFamily:"Nunito_600SemiBold"}]}>
+        <View style={[styless.welcomeButtonStyle]}>
+          <Text
+            style={[styless.buttonText, { fontFamily: "Nunito_600SemiBold" }]}
+          >
             Next
           </Text>
         </View>
       )}
       renderDoneButton={() => (
-        <View style={styless.welcomeButtonStyle }>
+        <View style={styless.welcomeButtonStyle}>
           <Text style={[styless.buttonText, { fontFamily: "" }]}>Done</Text>
         </View>
-  )}
+      )}
       showSkipButton={false}
       dotStyle={commonStyles.dotStyle}
       bottomButton={true}
@@ -78,4 +98,3 @@ export default function WelcomeIntroScreen() {
     />
   );
 }
-

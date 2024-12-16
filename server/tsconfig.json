@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+      "module": "NodeNext",
+      "moduleResolution": "NodeNext",
+      "target": "ES2020", // Or adjust based on your project needs
+      "esModuleInterop": true,
+      "skipLibCheck": true,
+      "strict": true,
+      "outDir": "./dist"
+    },
+    "include": ["./**/*.ts"], // Adjust to match your TypeScript file paths
+    "exclude": ["node_modules"]
+  }
+  

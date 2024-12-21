@@ -7,11 +7,12 @@ import jwt, { JwtPayload, Secret } from "jsonwebtoken";
 import ejs from "ejs";
 import path from "path";
 import sendMail from "../utils/sendMail";
-import { sendToken } from "../utils/jwt";
-// import { redis } from "../utils/redis";
+import { accessTokenOptions, refreshTokenOptions, sendToken } from "../utils/jwt";
+import { redis } from "../utils/redis";
+import { json } from "stream/consumers";
+import { getUserById } from "../services/user.service";
 // import {
 //   getAllUsersService,
-//   getUserById,
 //   updateUserRoleService,
 // } from "../services/user.service";
 // import cloudinary from "cloudinary";
@@ -175,8 +176,8 @@ export const logoutUser = CatchAsyncError(
     try {
       res.cookie("access_token", "", { maxAge: 1 });
       res.cookie("refresh_token", "", { maxAge: 1 });
-      // const userId = req.user?._id || "";
-      // redis.del(userId);
+      const userId = req.user?._id || "";
+      redis.del(userId);
       res.status(200).json({
         success: true,
         message: "Logged out successfully",
@@ -188,51 +189,67 @@ export const logoutUser = CatchAsyncError(
 );
 
 // update access token
-// export const updateAccessToken = CatchAsyncError(
-//   async (req: Request, res: Response, next: NextFunction) => {
-//     try {
-//       const refresh_token = req.headers["refresh-token"] as string;
-//       const decoded = jwt.verify(
-//         refresh_token,
-//         process.env.REFRESH_TOKEN as string
-//       ) as JwtPayload;
+export const updateAccessToken = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const refresh_token = req.cookies.refresh_token as string;
+      const decoded = jwt.verify(
+        refresh_token,
+        process.env.REFRESH_TOKEN as string) as JwtPayload;
 
-//       const message = "Could not refresh token";
-//       if (!decoded) {
-//         return next(new ErrorHandler(message, 400));
-//       }
-//       const session = await redis.get(decoded.id as string);
+      const message = "Could not refresh token";
+      if (!decoded) {
+        return next(new ErrorHandler(message, 400));
+      }
+      const session = await redis.get(decoded.id as string);
 
-//       if (!session) {
-//         return next(
-//           new ErrorHandler("Please login for access this resources!", 400)
-//         );
-//       }
+      if (!session) {
+        return next(
+          new ErrorHandler("Please login for access this resources!", 400)
+        );
+      }
 
-//       const user = JSON.parse(session);
+      const user = JSON.parse(session);
+
+      const accessToken = jwt.sign({id: user._id}, process.env.ACCESS_TOKEN as string,{
+        expiresIn: "5m",
+      });
+
+      const refreshToken = jwt.sign({id: user._id}, process.env.REFRESH_TOKEN as string,{
+      expiresIn: "3d",
+      })
+    
+      res.cookie("access_token", accessTokenOptions,);
+      res.cookie("refresh_token",refreshToken,refreshTokenOptions);
+      
+      res.status(200).json({
+        status: "success",
+        accessToken,
+      })
+      
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  });
+
 
 //       req.user = user;
 
 //       await redis.set(user._id, JSON.stringify(user), "EX", 604800); // 7days
 
 //       return next();
-//     } catch (error: any) {
-//       return next(new ErrorHandler(error.message, 400));
-//     }
-//   }
-// );
-
+   
 // get user info
-// export const getUserInfo = CatchAsyncError(
-//   async (req: Request, res: Response, next: NextFunction) => {
-//     try {
-//       const userId = req.user?._id;
-//       getUserById(userId, res);
-//     } catch (error: any) {
-//       return next(new ErrorHandler(error.message, 400));
-//     }
-//   }
-// );
+export const getUserInfo = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId = req.user?._id;
+      getUserById(userId, res);
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);
 
 // interface ISocialAuthBody {
 //   email: string;
@@ -444,4 +461,4 @@ export const logoutUser = CatchAsyncError(
 //       return next(new ErrorHandler(error.message, 400));
 //     }
 //   }
-// );
+//  );

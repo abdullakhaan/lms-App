@@ -9,13 +9,7 @@ import path from "path";
 import sendMail from "../utils/sendMail";
 import { accessTokenOptions, refreshTokenOptions, sendToken } from "../utils/jwt";
 import { redis } from "../utils/redis";
-import { json } from "stream/consumers";
 import { getUserById } from "../services/user.service";
-// import {
-//   getAllUsersService,
-//   updateUserRoleService,
-// } from "../services/user.service";
-// import cloudinary from "cloudinary";
 
 // register user
 interface IRegistrationBody {
@@ -171,13 +165,22 @@ export const loginUser = CatchAsyncError(
 );
 
 // logout user
+
+
 export const logoutUser = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       res.cookie("access_token", "", { maxAge: 1 });
       res.cookie("refresh_token", "", { maxAge: 1 });
-      const userId = String(req.user?._id || "");
-      redis.del(userId);
+
+      const userId = req.user?._id || "";
+      
+      if (typeof userId === 'string' && userId) {
+        await redis.del(userId);
+      } else {
+        console.error("User  ID is not valid:", userId);
+      }
+     
       res.status(200).json({
         success: true,
         message: "Logged out successfully",
@@ -195,7 +198,7 @@ export const updateAccessToken = CatchAsyncError(
       const refresh_token = req.cookies.refresh_token as string;
       const decoded = jwt.verify(
         refresh_token,
-        process.env.REFRESH_TOKEN as string) as JwtPayload;
+        process.env.REFRESH_TOKEN as string) as JwtPayload ;
 
       const message = "Could not refresh token";
       if (!decoded) {
@@ -237,21 +240,54 @@ export const updateAccessToken = CatchAsyncError(
 
      
 
-//       await redis.set(user._id, JSON.stringify(user), "EX", 604800); // 7days
+      // await redis.set(user._id, JSON.stringify(user), "EX", 604800); // 7days
 
-//       return next();
+      // return next();
    
 // get user info
+interface IUserRequest extends Request {
+  user?: IUser;}
+
+// export interface IUser {
+//   _id: string;
+//   name: string;
+//   email: string;
+//   password: string;
+//   avatar?: string;
+// }
+
+
+// export const getUserInfo = CatchAsyncError(
+//   async (req: IUserRequest, res: Response, next: NextFunction) => {
+//     try {
+//       const userId = req.user?._id;
+//       if (!userId) {
+//         return next(new ErrorHandler("User not found", 404));
+//       }
+//       getUserById(userId, res);
+//     } catch (error: any) {
+//       return next(new ErrorHandler(error.message, 400));
+//     }
+//   }
+  
+// );
 export const getUserInfo = CatchAsyncError(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: IUserRequest, res: Response, next: NextFunction) => {
     try {
       const userId = req.user?._id;
-      getUserById(userId, res);
+
+      if (!userId || typeof userId !== 'string') {
+        return next(new ErrorHandler("User  not found", 404));
+      }
+
+      await getUserById(userId, res);
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
     }
   }
 );
+
+
 
 interface ISocialAuthBody {
   email: string;
@@ -283,24 +319,66 @@ export const socialAuth = CatchAsyncError(
 interface IUpdateUserInfo {
   name?: string;
   email?: string;
+  
 }
 
-export const updateUserInfo = CatchAsyncError(
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const { name,email } = req.body as IUpdateUserInfo;
 
-      const userId = req.user?._id;
+// export const updateUserInfo = CatchAsyncError(
+//   async (req: Request, res: Response, next: NextFunction) => {
+//     try {
+//       const { name,email } = req.body as IUpdateUserInfo;
+
+//       const userId = req.user?._id;
+//       const user = await userModel.findById(userId);
+
+//       if (email && user){
+//         const isEmailExist = await userModel.findOne({email});
+//         if(isEmailExist){
+//           return next(new ErrorHandler("Email already exist",400));
+//         }
+//         user.email = email;
+//       }
+
+
+//       if (name && user) {
+//         user.name = name;
+//       }
+
+//       await user?.save();
+
+//       await redis.set(userId, JSON.stringify(user));
+
+//       res.status(201).json({
+//         success: true,
+//         user,
+//       });
+      
+//     } catch (error: any) {
+//       return next(new ErrorHandler(error.message, 400));
+//     }
+//   }
+// );
+export const updateUserInfo = CatchAsyncError(
+  async (req: IUserRequest, res: Response, next: NextFunction) => {
+    try {
+      const { name, email } = req.body as IUpdateUserInfo;
+
+      const userId = req.user?._id; // This is of type unknown
+
+      // Check if userId is defined and is a string
+      if (!userId || typeof userId !== 'string') {
+        return next(new ErrorHandler("User  not found", 404));
+      }
+
       const user = await userModel.findById(userId);
 
-      if (email && user){
-        const isEmailExist = await userModel.findOne({email});
-        if(isEmailExist){
-          return next(new ErrorHandler("Email already exist",400));
+      if (email && user) {
+        const isEmailExist = await userModel.findOne({ email });
+        if (isEmailExist) {
+          return next(new ErrorHandler("Email already exists", 400));
         }
         user.email = email;
       }
-
 
       if (name && user) {
         user.name = name;
@@ -308,13 +386,13 @@ export const updateUserInfo = CatchAsyncError(
 
       await user?.save();
 
-      await redis.set(userId, JSON.stringify(user));
+      // Use type assertion to inform TypeScript that userId is a string
+      await redis.set(userId as string, JSON.stringify(user));
 
       res.status(201).json({
         success: true,
         user,
       });
-      
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
     }
@@ -327,24 +405,67 @@ interface IUpdatePassword {
   newPassword: string;
 }
 
-export const updatePassword = CatchAsyncError(
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-       const { oldPassword, newPassword } = req.body as IUpdatePassword;
+// export const updatePassword = CatchAsyncError(
+//   async (req: Request, res: Response, next: NextFunction) => {
+//     try {
+//        const { oldPassword, newPassword } = req.body as IUpdatePassword;
 
       
+
+//       if (!oldPassword || !newPassword) {
+//         return next(new ErrorHandler("Please enter old and new password", 400));
+//       }
+
+//       const user = await userModel.findById(req.user?._id).select("+password");
+
+//       if (user?.password === undefined) {
+//         return next(new ErrorHandler("Invalid user", 400));
+//       }
+
+//       const isPasswordMatch = await user?.comparePassword(oldPassword);
+
+//       if (!isPasswordMatch) {
+//         return next(new ErrorHandler("Invalid old password", 400));
+//       }
+
+//       user.password = newPassword;
+
+//       await user.save();
+
+//       await redis.set(req.user?._id, JSON.stringify(user));
+
+//       res.status(201).json({
+//         success: true,
+//         user,
+//       });
+//     } catch (error: any) {
+//       return next(new ErrorHandler(error.message, 400));
+//     }
+//   }
+// );
+export const updatePassword = CatchAsyncError(
+  async (req: IUserRequest, res: Response, next: NextFunction) => {
+    try {
+      const { oldPassword, newPassword } = req.body as IUpdatePassword;
 
       if (!oldPassword || !newPassword) {
         return next(new ErrorHandler("Please enter old and new password", 400));
       }
 
-      const user = await userModel.findById(req.user?._id).select("+password");
+      const userId = req.user?._id; // This is of type unknown
 
-      if (user?.password === undefined) {
+      // Check if userId is defined and is a string
+      if (!userId || typeof userId !== 'string') {
+        return next(new ErrorHandler("User  not found", 404));
+      }
+
+      const user = await userModel.findById(userId).select("+password");
+
+      if (!user) {
         return next(new ErrorHandler("Invalid user", 400));
       }
 
-      const isPasswordMatch = await user?.comparePassword(oldPassword);
+      const isPasswordMatch = await user.comparePassword(oldPassword);
 
       if (!isPasswordMatch) {
         return next(new ErrorHandler("Invalid old password", 400));
@@ -354,7 +475,8 @@ export const updatePassword = CatchAsyncError(
 
       await user.save();
 
-      await redis.set(req.user?._id, JSON.stringify(user));
+      // Use type assertion to inform TypeScript that userId is a string
+      await redis.set(userId as string, JSON.stringify(user));
 
       res.status(201).json({
         success: true,

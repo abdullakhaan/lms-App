@@ -10,6 +10,8 @@ import sendMail from "../utils/sendMail";
 import { accessTokenOptions, refreshTokenOptions, sendToken } from "../utils/jwt";
 import { redis } from "../utils/redis";
 import { getUserById } from "../services/user.service";
+import cloudinary from "cloudinary";
+
 
 // register user
 interface IRegistrationBody {
@@ -488,60 +490,60 @@ export const updatePassword = CatchAsyncError(
   }
 );
 
-// interface IUpdateProfilePicture {
-//   avatar: string;
-// }
+interface IUpdateProfilePicture {
+  avatar: string;
+}
 
 // update profile picture
-// export const updateProfilePicture = CatchAsyncError(
-//   async (req: Request, res: Response, next: NextFunction) => {
-//     try {
-//       const { avatar } = req.body as IUpdateProfilePicture;
+export const updateProfilePicture = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { avatar } = req.body as IUpdateProfilePicture;
 
-//       const userId = req.user?._id;
+      const userId = req.user?._id as string;
 
-//       const user = await userModel.findById(userId).select("+password");
+      const user = await userModel.findById(userId).select("+password");
 
-//       if (avatar && user) {
-//         // if user have one avatar then call this if
-//         if (user?.avatar?.public_id) {
-//           // first delete the old image
-//           await cloudinary.v2.uploader.destroy(user?.avatar?.public_id);
+      if (avatar && user) {
+        // if user have one avatar then call this if
+        if (user?.avatar?.public_id) {
+          // first delete the old image
+          await cloudinary.v2.uploader.destroy(user?.avatar?.public_id);
 
-//           const myCloud = await cloudinary.v2.uploader.upload(avatar, {
-//             folder: "avatars",
-//             width: 150,
-//           });
-//           user.avatar = {
-//             public_id: myCloud.public_id,
-//             url: myCloud.secure_url,
-//           };
-//         } else {
-//           const myCloud = await cloudinary.v2.uploader.upload(avatar, {
-//             folder: "avatars",
-//             width: 150,
-//           });
-//           user.avatar = {
-//             public_id: myCloud.public_id,
-//             url: myCloud.secure_url,
-//           };
-//         }
-//       }
+          const myCloud = await cloudinary.v2.uploader.upload(avatar, {
+            folder: "avatars",
+            width: 150,
+          });
+          user.avatar = {
+            public_id: myCloud.public_id,
+            url: myCloud.secure_url,
+          };
+        } else {
+          const myCloud = await cloudinary.v2.uploader.upload(avatar, {
+            folder: "avatars",
+            width: 150,
+          });
+          user.avatar = {
+            public_id: myCloud.public_id,
+            url: myCloud.secure_url,
+          };
+        }
+      }
 
-//       await user?.save();
+      await user?.save();
 
-//       await redis.set(userId, JSON.stringify(user));
+      await redis.set(userId, JSON.stringify(user));
 
-//       res.status(200).json({
-//         success: true,
-//         user,
-//       });
-//     } catch (error: any) {
-//       console.log(error);
-//       return next(new ErrorHandler(error.message, 400));
-//     }
-//   }
-// );
+      res.status(200).json({
+        success: true,
+        user,
+      });
+    } catch (error: any) {
+      console.log(error);
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);
 
 // get all users --- only for admin
 // export const getAllUsers = CatchAsyncError(

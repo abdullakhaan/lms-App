@@ -224,7 +224,7 @@ export const updateAccessToken = CatchAsyncError(
 
       req.user = user;
     
-      res.cookie("access_token", accessTokenOptions,);
+      res.cookie("access_token",accessToken, accessTokenOptions,);
       res.cookie("refresh_token",refreshToken,refreshTokenOptions);
       
       res.status(200).json({

@@ -12,7 +12,6 @@ import { redis } from "../utils/redis";
 import { getUserById } from "../services/user.service";
 import cloudinary from "cloudinary";
 
-
 // register user
 interface IRegistrationBody {
   name: string;

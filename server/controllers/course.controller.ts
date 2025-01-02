@@ -10,7 +10,7 @@ import path from "path";
 import ejs from "ejs";
 import sendMail from "../utils/sendMail";
 import axios from "axios";
-import NotificationModel from "../models/notification.Model";
+import NotificationModel from "../models/notification.Model"; 
 
 // upload course
 export const uploadCourse = CatchAsyncError(
@@ -121,14 +121,24 @@ export const getSingleCourse = CatchAsyncError(
 export const getAllCourses = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
+      const isCacheExist = await redis.get("allCourses");
+      if (isCacheExist) {
+        const courses = JSON.parse(isCacheExist);
+        res.status(200).json({
+          success: true,
+          courses,
+        });
+      }else{
       const courses = await CourseModel.find().select(
         "-courseData.videoUrl -courseData.suggestion -courseData.questions -courseData.links"
       );
 
+      await redis.set("allCourses",  JSON.stringify(courses));
       res.status(200).json({
         success: true,
         courses,
       });
+    }
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 500));
     }
@@ -315,6 +325,7 @@ interface IAddReviewData {
   review: string;
   rating: number;
   userId: string;
+  courseId: string; 
 }
 
 export const addReview = CatchAsyncError(
@@ -407,8 +418,8 @@ export const addReplyToReview = CatchAsyncError(
       const replyData: any = {
         user: req.user,
         comment,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        // createdAt: new Date().toISOString(),
+        // updatedAt: new Date().toISOString(),
       };
 
       if (!review.commentReplies) {
@@ -421,7 +432,7 @@ export const addReplyToReview = CatchAsyncError(
 
       await redis.set(courseId, JSON.stringify(course), "EX", 604800); // 7days
 
-      res.status(200).json({
+      res.status(200).json({ 
         success: true,
         course,
       });

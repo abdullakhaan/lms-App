@@ -6,6 +6,9 @@ import  cors  from "cors";
 import { ErrorMiddleware } from "./middleware/error";
 import userRouter from "./routes/user.route";
 import courseRouter from "./routes/course.route";
+import orderRouter from "./routes/order.route";
+import notificationRouter from "./routes/notification.route";
+
 
 // body parcer
 
@@ -24,13 +27,8 @@ app.use(express.json({limit: "50mb"}));
  
  app.use(
    "/api/v1",
-   userRouter
+   userRouter,courseRouter, orderRouter, notificationRouter
  );
- app.use(
-   "/api/v1",
-   courseRouter
- );
- 
 
  // TESTING API 
 
